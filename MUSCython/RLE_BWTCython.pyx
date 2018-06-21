@@ -57,7 +57,11 @@ cdef class RLE_BWT(BasicBWT.BasicBWT):
         self.dirName = dirName
         self.useMemmapRLE = useMemmap
         if useMemmap:
-            self.bwt = np.load(self.dirName+'/comp_msbwt.npy', 'r+')
+            try:
+                self.bwt = np.load(self.dirName+'/comp_msbwt.npy', 'r+')
+            except IOError:
+                # if error, most likely we are in read-only mode, so let's try
+                self.bwt = np.load(self.dirName+'/comp_msbwt.npy', 'r')
         else:
             self.bwt = np.load(self.dirName+'/comp_msbwt.npy')
         self.bwt_view = self.bwt

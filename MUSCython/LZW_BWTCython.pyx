@@ -59,7 +59,11 @@ cdef class LZW_BWT(BasicBWT.BasicBWT):
         #open the file with our BWT in it
         self.dirName = dirName
         if useMemmap:
-            self.bwt = np.memmap(self.dirName+'/comp_msbwt.dat', dtype='<u1', mode='r+')
+            try:
+                self.bwt = np.memmap(self.dirName+'/comp_msbwt.dat', dtype='<u1', mode='r+')
+            except IOError:
+                # if error, most likely we are in read-only mode, so let's try
+                self.bwt = np.memmap(self.dirName+'/comp_msbwt.dat', dtype='<u1', mode='r')
         else:
             self.bwt = np.fromfile(self.dirName+'/comp_msbwt.dat', dtype='<u1')
         self.bwt_view = self.bwt

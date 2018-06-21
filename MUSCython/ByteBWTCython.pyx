@@ -33,7 +33,12 @@ cdef class ByteBWT(BasicBWT.BasicBWT):
         self.dirName = dirName
         self.useMemmap = useMemmap
         if useMemmap:
-            self.bwt = np.load(self.dirName+'/msbwt.npy', 'r+')
+            try:
+                self.bwt = np.load(self.dirName+'/msbwt.npy', 'r+')
+            except IOError:
+                # if error, most likely we are in read-only mode, so let's try
+                self.bwt = np.load(self.dirName+'/msbwt.npy', 'r')
+
         else:
             self.bwt = np.load(self.dirName+'/msbwt.npy')
         self.bwt_view = self.bwt
